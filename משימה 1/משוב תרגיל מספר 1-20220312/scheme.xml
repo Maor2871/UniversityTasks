@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<functions>
+    <replace sign="4a">
+        <test sign="4a_1" grade="2">
+            <input id="1">"does5this6work", 'o', 'a'</input>
+            <output id="1">"daes5this6wark"</output>
+        </test>
+        <test sign="4a_2" grade="2">
+            <input id="2">"so sue supposedly said something silly", 's ', 'zu'</input>
+            <output id="2">"zouzueuzuppozedlyuzaiduzomethinguzilly"</output>
+        </test>
+        <test sign="4a_3" grade="2">
+            <input id="3">"gomp sgi 101 is gool", 'g10', 'c55'</input>
+            <output id="3">"comp sci 555 is cool"</output>
+        </test>
+        <test sign="4a_4" grade="2">
+            <input id="4">"", 'abc', 'def'</input>
+            <output id="4">""</output>
+        </test>
+    </replace>
+
+    <is_pal sign="4b">
+        <test sign="4b_1" grade="2">
+            <input id="1">"abcdeffegggg"</input>
+            <output id="1">False</output>
+        </test>
+        <test sign="4b_2" grade="2">
+            <input id="2">"rats. live on no... evil star"</input>
+            <output id="2">True</output>
+        </test>
+        <test sign="4b_3" grade="2">
+            <input id="3">"was. it a car or a cats i     .saw"</input>
+            <output id="3">False</output>
+        </test>
+        <test sign="4b_4" grade="2">
+            <input id="4">"mr. .o.w.l ate my metal    wor m."</input>
+            <output id="4">True</output>
+        </test>
+    </is_pal>
+
+    <num_different_letters sign="4c">
+        <test sign="4c_1" grade="2">
+            <input id="1">"the .5. artist is the creator of beautiful things"</input>
+            <output id="1">15</output>
+        </test>
+        <test sign="4c_2" grade="2">
+            <input id="2">"yabba6daba9876dooooo....."</input>
+            <output id="2">5</output>
+        </test>
+        <test sign="4c_3" grade="2">
+            <input id="3">"how8much555wood would a woodchuck chuck if a woodchuck could chuckwoodd"</input>
+            <output id="3">12</output>
+        </test>
+    </num_different_letters>
+
+    <most_frequent sign="4d">
+        <test sign="4d_1" grade="2">
+            <input id="1">"banibieboabatabo"</input>
+            <output id="1">"b"</output>
+        </test>
+        <test sign="4d_2" grade="2">
+            <input id="2">"so sue supposedly said something silly"</input>
+            <output id="2">"s"</output>
+        </test>
+        <test sign="4d_3" grade="2">
+            <input id="3">"0"</input>
+            <output id="3">"0"</output>
+        </test>
+        <test sign="4d_4" grade="2">
+            <input id="4">"zonky      zebras zeal"</input>
+            <output id="4">" "</output>
+        </test>
+    </most_frequent>
+
+    <kth_order sign="4e">
+        <test sign="4e_1" grade="2">
+            <input id="1">"        hii      ", 3</input>
+            <output id="1">"h"</output>
+        </test>
+        <test sign="4e_2" grade="2">
+            <input id="2">"aaabbccccccccc a", 2</input>
+            <output id="2">"a"</output>
+        </test>
+        <test sign="4e_3" grade="2">
+            <input id="3">"0", 1</input>
+            <output id="3">"0"</output>
+        </test>
+        <test sign="4e_4" grade="2">
+            <input id="4">"abbbccccbbba                   ", 4</input>
+            <output id="4">"a"</output>
+        </test>
+    </kth_order>
+
+    <calc sign="5">
+        <test sign="5_1" grade="6">
+            <input id="1">"'da'*'5'+'zyzx'*'3'"</input>
+            <output id="1">"dadadadadazyzxdadadadadazyzxdadadadadazyzx"</output>
+        </test>
+        <test sign="5_2" grade="6">
+            <input id="2">"'hi5'*'2'+'l o'-' '*'3'+'1'"</input>
+            <output id="2">"hi5hi5lohi5hi5lohi5hi5lo1"</output>
+        </test>
+        <test sign="5_3" grade="6">
+            <input id="3">"'   '-'a'*'3'+'_ _'*'1'+'b'"</input>
+            <output id="3">"         _ _b"</output>
+        </test>
+        <test sign="5_4" grade="2">
+            <input id="4">""</input>
+            <output id="4">""</output>
+        </test>
+        <test sign="5_5" grade="6">
+            <input id="5">"'a + b+'-'+'+'*3cd'*'5'+'* 5'"</input>
+            <output id="5">"a  b*3cda  b*3cda  b*3cda  b*3cda  b*3cd* 5"</output>
+        </test>
+        <test sign="5_6" grade="4">
+            <input id="6">"'a'-'a'+'b'-'c'+'a'-'c'*'3'"</input>
+            <output id="6">"bababa"</output>
+        </test>
+    </calc>
+
+
+</functions>

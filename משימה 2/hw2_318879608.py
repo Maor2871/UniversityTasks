@@ -7,8 +7,8 @@
 
 # Change the name of the file to include your ID number (hw2_ID.py).
 
+
 import random # loads python's random module in order to use random.random() in question 2
-from time import perf_counter
 
 
 #----- Semi Functions -----
@@ -17,7 +17,7 @@ from time import perf_counter
 def is_perfect_number(n):
     """
         The function receives a number and returns True if it is a perfect number, Otherwise returns False.
-        An perfect number is a number which the sum of its divisors equals itself.
+        A perfect number is a number which the sum of its divisors equals itself.
     """
 
     # Sum the divisors of the received number and check if the sum is equal to the number itself.
@@ -75,6 +75,7 @@ def lychrel_loops_limit(n, limit):
 
     # the number is [limit] lychrel suspect.
     return True, 0
+
 
 #----- Answers -----
 
@@ -219,18 +220,18 @@ def coin():
 # Q2b
 def roll_dice(d):
     """
-        The function receives a size of an equal dice, and rolls the correct dice. It returns the chosen number.
+        The function receives a size of an equal dice and rolls it. It returns the chosen number on the dice.
         Note that d is a natural number and greater than or equal to 2.
         Note that the function returns a number in {1, 2, ..., d}, because each one of these number represents a side of the dice. 
     """
 
     # Get a random number, 0 <= n < 1.
-    random_num = random.random()
+    random_num = random.random() 
 
-    # if [0 <= random_num < 1/d], then [0 <= d * random_num < 1] - so returns 0 + 1 = 1.
-    # if [1/d <= random_num < 2/d], then [1 <= d * random_num < 2] - returns 1 + 1 = 2.
+    # if [0 <= random_num < 1/d], then [0 <= d * random_num < 1]:       returns 0 + 1 = 1.
+    # if [1/d <= random_num < 2/d], then [1 <= d * random_num < 2]:     returns 1 + 1 = 2.
     # and so on... up to:
-    # if [(d-1)/d <= random_num < 1], then [d-1 <= d * random_num < d] - returns d-1 + 1 = d.
+    # if [(d-1)/d <= random_num < 1], then [d-1 <= d * random_num < d]: returns d-1 + 1 = d.
     # Therefore each number from 1 to d included, has the same chance of getting chosen.
     return int(random_num * d) + 1
 
@@ -255,19 +256,19 @@ def roulette(bet_size, parity):
     if roulette_result == 0:
         return 0
 
-    # Horray! The parity received and the parity of the chosen number matches!
+    # Horray! The received parity and the parity of the chosen number hit a match!
     elif roulette_result % 2 == parity:
         return 2 * bet_size
 
     # Ho no! no match in parities.
     return 0
-    
+
 
 # Q2d
 def roulette_repeat(bet_size, n):
     """
         The function plays the roullete n times.
-        It choses the parity flag by flipping a coin, therefore half a chance an odd bet, half a chance even.
+        It chooses the parity flag by flipping a coin, therefore half a chance an odd bet, half a chance even.
         Note that the function chooses a new parity flag each round.
     """
 
@@ -284,7 +285,7 @@ def roulette_repeat(bet_size, n):
         # (reset current_round_balance from previous round on the way)
         current_round_balance = - bet_size
         
-        # Now play the roulette with the received bet size and the chosen parity. Add the award to final balance.
+        # Now play the roulette with the received bet size and the chosen parity. Add the award to the current round balance.
         current_round_balance += roulette(bet_size, parity)
 
         # Add the balance of the current round to the final balance.
@@ -303,8 +304,8 @@ def shuffle_list(lst):
     # The shuffled list.
     shuffled = []
 
-    # Don't damage the original list.
-    # Contains all the elements which haven't been chosen yet.
+    # We are going to mutate the received list, copy it so the original one won't be damaged.
+    # O(n) indeed, but in case the original list is not needed, this command is very recommended to be eliminated.
     elements_remained = lst.copy()
     
     # Pop all the n indexes of the received list (n is the length of the list).
@@ -312,7 +313,7 @@ def shuffle_list(lst):
     # n, n-1, ..., 3, 2, 1.
     for current_length in range(len(lst), 0, -1):
 
-        # Choose a random slot from the remains list.
+        # Choose a random slot from the *remains list*.
         random_slot = roll_dice(current_length) - 1
 
         # Pop the element in the chosen slot from the remains list, and append it to the shuffled list.
@@ -330,7 +331,7 @@ def shuffle_list(lst):
 # Q3a
 def inc(binary):
     """
-        the function receives a positive binary number as a string of '0' and '1'.
+        the function receives a positive binary number as a string of '0's and '1's.
         It increments the number by 1 and returns the new number.
     """
 
@@ -340,7 +341,7 @@ def inc(binary):
 
     # True if we carry 1 from the previous iteration.
     # Initial value is set to point on the status after the incrementation.
-    # If reached this line, there was a carry.
+    # (because if reached this line, there was a carry)
     carry = True
 
     # Set the rightest digit of the new line to be 0, the carry flag is on.
@@ -383,7 +384,7 @@ def add(bin1, bin2):
         The function receives two binary numbers and returns thier binary sum.
     """
 
-    # Pad the shorter number with "0" to its left, so bin1, bin2 will be equally lengtht.
+    # Pad the shorter number with "0" to its left, so bin1, bin2 will be of equal length.
     bin1, bin2 = pad_binaries(bin1, bin2)
 
     # The binary sum of the two received numbers.
@@ -469,7 +470,7 @@ def div_two(binary, power):
         The function receives a binary number and a power.
         It returns the division of the binary number and 2 to the received power.
         Algorithm:
-            Suppose binary number is Σ[Ak*(2**k)]. Note that Σ[Ak*(2**k)] / (2**p) = Σ[Ak*(2**(k-p))].
+            Suppose a binary number is Σ[Ak*(2**k)]. Note that Σ[Ak*(2**k)] / (2**p) = Σ[Ak*(2**(k-p))].
             Now if we eventuall floor the received number, its as simple as ignoring those 2 power negtive numbers.
             Therefore, we are left with Σ[Ak*(2**(k-p))] for k >= p. Which simply means throw away all the digits from the right side of the number to the length - p - 1 digit.
     """
@@ -599,7 +600,7 @@ def is_lychrel_suspect(n, t):
 # Q4c
 def lychrel_sort(numbers, t):
     """
-        The function receives a list of numbers and and integer t.
+        The function receives a list of numbers and an integer t.
         It returns a new list with all the numbers, only sorted by their lychrel suspect rounds quantity. The form of the list:
         [a, b, c, ..., d, e, f, ...]
         where a,b,c,... are numbers which are not t lychrel suspects, and ordered by their rounds quantity in ascending order (equal rounds --> original order).
@@ -637,7 +638,7 @@ def lychrel_sort(numbers, t):
     numbers_rounds_ordered.sort(key=lambda number: number["rounds"])
     
     # Now combine the two lists to one, and return the new list.
-    return [number["number"] for number in numbers_rounds_ordered] + t_lychrel_suspects_ordered
+    return [number_data["number"] for number_data in numbers_rounds_ordered] + t_lychrel_suspects_ordered
 
 
 ##############
@@ -735,7 +736,7 @@ def calculate_w(grades, target_average):
         sum_hw_grades += (sum(sorted(hw_grades[1:3])) / 2)
 
     
-    # --- Plug the values to the formual and return ---
+    # --- Plug the values in the formula and return ---
         
     
     w = (target_average * len(grades) - sum_hw_grades) / (sum_test_grades - sum_hw_grades)
@@ -858,22 +859,31 @@ def my_test():
         print("divisors error 1")
     if divisors(0) != []:
         print("divisors error 2")
+    if divisors(7) != [1]:
+        print("divisors error 3")
 
     # 1 b
     if perfect_numbers(1) != [6]:
         print("perfect_numbers error 1")
     if perfect_numbers(2) != [6, 28]:
-        print("perfect_numbers error 1")
+        print("perfect_numbers error 2")
+    if perfect_numbers(0) != []:
+        print("perfect_numbers error 3")
 
     # 1 c
-    if abundant_density(20) != 0.15:
+    if abundant_density(20) != 0.15 or type(abundant_density(20)) is not float:
         print("abundant_density error 1")
+    if abundant_density(1) != 0:
+        print("abundant_density error 2")
 
     # 1 e
     if not semi_perfect_4(20):
         print("semi_perfect_4 error 1")
     if semi_perfect_4(28):
         print("semi_perfect_4 error 2")
+    if semi_perfect_4(1) or semi_perfect_4(2) or semi_perfect_4(3) or semi_perfect_4(4):
+        print("semi_perfect_4 error 3")
+    
 
     # --- Question 2 ---
 
@@ -892,9 +902,10 @@ def my_test():
         print("roullete_repeat error 2")
 
     # 2 d
-    awards_spectrum = list(range(-2500*10, 2500*10, 2500))
-    if True in [roulette_repeat(2500, 10) not in awards_spectrum for i in range(30)]:
-        print("roullete_repeat error 1")
+    awards_spectrum = list(range(-2500*10, 2500*11, 2500))
+    for i in range(500):
+        if True in [roulette_repeat(2500, 10) not in awards_spectrum for i in range(30)]:
+            print("roullete_repeat error 1")
     awards_spectrum = list(range(-30*500, 30*500, 30))
     if True in [roulette_repeat(30, 500) not in awards_spectrum for i in range(30)]:
         print("roullete_repeat error 2")
@@ -916,6 +927,8 @@ def my_test():
         print("inc error 4")
     if inc("11110") != "11111":
         print("inc error 5")
+    if inc("110111") != "111000":
+        print("inc error 6")
 
     # 3 b
     if add("1", "1") != "10":
@@ -928,10 +941,28 @@ def my_test():
         print("add error 4")
     if add("11", "110") != "1001":
         print("add error 5")
+    if add("11110110001100111", "1001100001101011001") != "1101010111111000000":
+        print("add error 6")
 
     # 3 c
+    if pow_two("1", 2) != "100":
+        print("pow_two error 1")
+    if pow_two("10", 2) != "1000":
+        print("pow_two error 2")
+    if pow_two("111", 5) != "11100000":
+        print("pow_two error 3")
 
     # 3 d
+    if div_two("1", 0) != "1":
+        print("div_two error 1")
+    if div_two("0", 0) != "0":
+        print("div_two error 2")
+    if div_two("110111000110101010001", 6) != "110111000110101":
+        print("div_two error 3")
+    if div_two("110111000110101010001", 1) != "11011100011010101000":
+        print("div_two error 4")
+    if div_two("110111000110101010001", 0) != "110111000110101010001":
+        print("div_two error 5")
 
     # 3 e
     if not leq("0", "1"):
@@ -960,6 +991,8 @@ def my_test():
         print("to_decimal error 5")
     if not to_decimal("1010") == 10:
         print("to_decimal error 6")
+    if not to_decimal("1100101010110000101011010100100111") == 13602305319:
+        print("to_decimal error 7")
 
     # ----- Question 4 -----
 
@@ -970,6 +1003,8 @@ def my_test():
         print("lychrel_loops error 2")
     if lychrel_loops(19) != 2:
         print("lychrel_loops error 3")
+    if lychrel_loops(0) != 1:
+        print("lychrel_loops error 4")
 
     # 4 b
     if not is_lychrel_suspect(28, 1):
@@ -1014,9 +1049,3 @@ def my_test():
     target_average = 86
     if calculate_w(grades, target_average) - 0.8 > 0.0001:
         print("calculate_w error 5")
-
-
-print("runnign tests..")
-my_test()
-test()
-print("all tests completed.")
