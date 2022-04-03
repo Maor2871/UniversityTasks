@@ -63,6 +63,10 @@ print("123468579", "result:", max_even_seq(123468579), "exepted: 3")
 print("2461285", "result:", max_even_seq(2461285), "exepted: 3")
 print("1359", "result:", max_even_seq(1359), "exepted: 0")
 print("2468", "result:", max_even_seq(2468), "exepted: 4")
+print("59049", "result:", max_even_seq(59049), "exepted: 2")
+print("1024", "result:", max_even_seq(1024), "exepted: 3")
+print("1", "result:", max_even_seq(1), "exepted: 0")
+print("0", "result:", max_even_seq(0), "exepted: 1")
 
 
 print(timeit(lambda: max_even_seq(11111111111111111111), number=10000))

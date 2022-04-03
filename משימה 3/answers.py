@@ -253,12 +253,55 @@ def approx_e(N):
 
 # Q4 - A
 def find(lst, s):
-    pass  # replace this with your code
+    """
+        The function receives an almost ordered list and an element. If the element is not in the list, returns None, otherwise returns its index.
+    """
+
+    # Search a lion in the desert.
+    # Set the left and right borders (indices).
+    left = 0
+    right = len(lst) - 1
+
+    # Narrow the desert.
+    while right - left > 3:
+        
+        # The middle of the desert.
+        middle = left + ((right - left) // 2)
+
+        # Greater than the middle, can be middle - 1 though.
+        if s >= lst[middle]:
+            left = middle - 1
+
+        # Less than the middle, can be middle + 1 though.
+        if s <= lst[middle]:
+            right = middle + 1
+
+    # We closed on the desert, it has no more than 4 suspected elements.
+    for i in range(left, right + 1):
+        if s == lst[i]:
+            return i
+
+    return None
 
 
 # Q4 - B
 def sort_from_almost(lst):
-    pass  # replace this with your code
+    """
+        The function receives an almost sorted list and  sorts it with in-place algorithm.
+        Based on bubble sort.
+    """
+
+    # Iterate over the received list.
+    for i in range(1, len(lst)):
+
+        # Not good.
+        if lst[i - 1] > lst[i]:
+
+            # Replace.
+            lst[i], lst[i -1 ] = lst[i - 1], lst[i]
+
+    # The list is now ordered.
+    return lst
 
 
 # Q4 - C
@@ -266,7 +309,7 @@ def generate_queries(k = 100, n = 1000):
     L = []
     for i in range(n):
         L.append(random.randint(0, k-1))
-    
+
     def q_g(m):
         size = 0
         for i in range(n): 
@@ -281,13 +324,37 @@ def generate_queries(k = 100, n = 1000):
 
     return q_l, q_g
 
-k = 100000
-n = 100
-q_l, q_g = generate_queries(k, n)
-
 
 def compute_median(q_l, q_g, k, n):
-    pass  # replace this with your code
+    """
+        The function receives two qeury functions: query lower, query greater.
+        It also receives a natural number k that represents the values range in the list, and a number n which represents the length of the list.
+        The function returns the median in the list.
+    """
+
+    # The numbers in the list are between 0 and k inclusive. Search for the median like a lion in the desert.
+    right = k
+    left = 0
+
+    # There must be a median inside the list.
+    while True:
+        
+        # The middle rounded down.
+        middle = left + (right - left)//2
+        
+        # The current middle is lower than too many numbers, it can't be the median.
+        if q_g(middle) > n // 2:
+            
+            left = middle
+
+        # The curent middle is greater than too many numbers, it can't be the median.
+        elif q_l(middle) > n // 2:
+
+            right = middle
+
+        # The current middle is not greater and not lower than too many numbers, all the rest are equal to it. That's the median.
+        else:
+            return middle
 
 
 # Q5 - A
@@ -347,6 +414,9 @@ def test():
         print("error in sort_from_almost")
     
     # Q4 - C
+    k = 100000
+    n = 100
+    q_l, q_g = generate_queries(k, n)
     M = compute_median(q_l, q_g, k, n)
     if not ((q_l(M) <= n//2) and (q_g(M) <= n//2)):
         print("error in compute_median")
@@ -421,8 +491,39 @@ def my_test():
     # Q3 - B
     if not 2.5 < approx_e(50000) < 3:
         print("approx_e failed to generate e on a very unlikely occasion")
-    
-#test()
+
+    # Q4 - A
+    for lst in [[3], [3, 2], [2, 3], [3, 4, 5], [4, 3, 5], [3, 5, 4], [1, 4, 6, 9], [4, 1, 9, 6], [2, 1, 3, 5, 4, 7, 6, 8, 9],
+                [23, 15, 32, 35, 98, 38, 104, 111, 106], [23, 15, 32, 35, 98, 38, 104, 111], [15, 23, 35, 32, 98, 38, 104, 111, 106, 114, 119, 140, 121, 160, 150, 203, 209]]:
+        for i in range(len(lst)):
+            if find(lst, lst[i]) != i:
+                print("find error. list:", lst, "element:", lst[i])
+
+    if find([23, 15, 32, 35, 98, 38, 104, 111, 106], 5) != None:
+        print("find error 1")
+    if find([23, 15, 32, 35, 98, 38, 104, 111, 106], 96) != None:
+        print("find error 2")
+    if find([23, 15, 32, 35, 98, 38, 104, 111, 106], 109) != None:
+        print("find error 3")
+    if find([23, 15, 32, 35, 98, 38, 104, 111, 106], 555) != None:
+        print("find error 4")
+
+    # Q4 - B
+    for lst in [[3], [3, 2], [2, 3], [3, 4, 5], [4, 3, 5], [3, 5, 4], [1, 4, 6, 9], [4, 1, 9, 6], [2, 1, 3, 5, 4, 7, 6, 8, 9], [2, 1, 3, 5, 4, 7, 6, 8, 9],
+                [23, 15, 32, 35, 98, 38, 104, 111, 106], [23, 15, 32, 35, 98, 38, 104, 111], [15, 23, 35, 32, 98, 38, 104, 111, 106, 114, 119, 140, 121, 160, 150, 203, 209]]:
+        if sorted(lst) != sort_from_almost(lst):
+            print("sort from almost error. lst:", lst)
+
+    # Q4 - C
+    for n in range(1, 1003, 1):
+        for k in [n//2 + 1, n, 2*n, n**2]:
+            q_l, q_g = generate_queries(k, n)
+            M = compute_median(q_l, q_g, k, n)
+            if not (q_l(M) <= n / 2 and q_g(M) <= n /2):
+                print("error in compute median. median found:", M, "list length:", n, "numbers range:", k)
+
+
+test()
 print()
 print("running my tests:")
 my_test()
