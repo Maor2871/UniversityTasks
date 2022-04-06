@@ -359,17 +359,74 @@ def compute_median(q_l, q_g, k, n):
 
 # Q5 - A
 def string_to_int(s):
-    pass  # replace this with your code
+    """
+        The function receives a string of length k and returns the lexicographic place of the string in the 5 letters alphabet.
+        Note:
+            - The function is injective in relation to the length of the string (as noted in the requirements).
+              Therefore, 'aaab' and 'ab' share the same value and it's valid.
+    """
+    
+    # Calculate the place of the string during the iterations.
+    place = 0
+
+    # Alphabetic order.
+    alphabetic_order = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4}
+  
+    # Iterate over the received string.
+    for i in range(len(s)):
+
+        # letter * (5 ** slot in s). Slot is from 0 to len(s) - 1 (right to left).
+        place += alphabetic_order[s[i]]*(5**(len(s)- i - 1))
+
+    return place
+
 
 
 # Q5 - B
 def int_to_string(k, n):
-    pass  # replace this with your code
+    """
+        The function receives a place in the lexicographic dictionary, and returns the string in length k in that place.
+    """
+
+    # Alphabetic order.
+    alphabetic_order = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e"}
+
+    # The word mathces to the length and lexicographic place.
+    word = ""
+    
+    # Keep extracting the letters with meaning.
+    while n > 0:
+
+        # Calculate the next letter.
+        word = alphabetic_order[(n % 5)] + word
+
+        # Discard the letter from n.
+        n = n // 5
+
+    # Fill the void with 'a's.
+    word = 'a' * (k - len(word)) + word
+    
+    # Return the word in that place.
+    return word
 
 
 # Q5 - C
 def sort_strings1(lst, k):
-    pass  # replace this with your code
+    """
+        The function receives a list with n strings, each string of length k. It returns a lexicographic sorted copy of the list.
+    """
+
+    # Each index represents the place in the lexicographic dictionary from 0 to 5**k. Each value represents a counter.
+    dictionary = [0 for i in range(5**k)]
+
+    # Iterate over the list.
+    for i in range(lst):
+
+        # Calculate the place of the current string in the lexicographic dictionary, and increase its counter.
+        dictionary[string_to_int(lst[i])] += 1
+
+    # Return an ordered list with all the strings in lst.
+    return []
 
 
 # Q5 - E
@@ -515,15 +572,50 @@ def my_test():
             print("sort from almost error. lst:", lst)
 
     # Q4 - C
+    """
     for n in range(1, 1003, 1):
         for k in [n//2 + 1, n, 2*n, n**2]:
             q_l, q_g = generate_queries(k, n)
             M = compute_median(q_l, q_g, k, n)
             if not (q_l(M) <= n / 2 and q_g(M) <= n /2):
                 print("error in compute median. median found:", M, "list length:", n, "numbers range:", k)
+    """
+    # Q5 - A
+    if string_to_int("a") != 0:
+        print("string to int error 1")
+    if string_to_int("c") != 2:
+        print("string to int error 2")
+    if string_to_int("ab") != 1:
+        print("string to int error 3")
+    if string_to_int("ea") != 20:
+        print("string to int error 4")
 
+    # Q5 - B
+    if int_to_string(1, 0) != "a":
+        print("int to string error 1")
+    if int_to_string(1, 4) != "e":
+        print("int to string error 2")
+    if int_to_string(2, 6) != "bb":
+        print("int to string error 3")
+    for k in range(1, 7):
+        for i in range(5**k):
+            if string_to_int(int_to_string(k, i)) != i:
+                print("Problem with ", i)
+    alphabet = ["a","b","c","d","e"]
+    for item in alphabet:
+        if int_to_string(1, string_to_int(item)) != item:
+            print("Problem with ", item)
+    lst = [x+y for x in alphabet for y in alphabet]
+    for item in lst:
+        if int_to_string(2, string_to_int(item)) != item:
+            print("Problem with ", item)
+    lst = [x+y+z for x in alphabet for y in alphabet for z in alphabet]
+    for item in lst:
+        if int_to_string(3, string_to_int(item)) != item:
+            print("Problem with ", item)
 
-test()
+    
+#test()
 print()
 print("running my tests:")
 my_test()
