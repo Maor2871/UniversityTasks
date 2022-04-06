@@ -62,14 +62,14 @@ def oct_to_fraction(octal):
     for i in range(len(octal)):
 
         # Add [digit * (1 / digit index)] to the final fraction sum.
-        fraction += int(octal[i]) * 8**(-i - 1)
+        fraction += int(octal[i]) * 8 ** (-i - 1)
 
     # That's it, return the fraction.
     return fraction        
 
 
 # Q2 - G
-oct_to_float = lambda octal: ((-1)**int(octal[0])) * 8**(((int(octal[1])*64 + int(octal[2])*8 + int(octal[3]))) - 255) * (1 + 7 * oct_to_fraction(octal[4:]))
+oct_to_float = lambda octal: 0 if octal == '0000000000000000' else ((-1)**int(octal[0])) * 8**(((int(octal[1])*64 + int(octal[2])*8 + int(octal[3]))) - 255) * (1 + 7 * oct_to_fraction(octal[4:]))
 
 
 # Q2 - H
@@ -137,17 +137,19 @@ def approx_root(x, eps):
         It calculates the approximation of sqrt x up to epsilon, with the aprroach described in the question.
         It returns the series a1, ..., an, and the final approximation value.
 
-        Notes:
+        Question Notes:
             - The way of solving this problem is defintly mathematical and any other aprroach is difinitely out of place.
               Nevertheless, the question requirements state that using sqrt or rasing to the power of 0.5 is not allowed, therefore I will take it as a line which was meant to block mathematic approach.
-              (There may be math workarounds to the sqrt issue but i will take this obligation as an order to neglect any mathematic solution to this problem)
+              (There might be some math workarounds to the sqrt issue but i will take this obligation as an order to neglect any mathematic solution to this problem)
             - I will raise to a power of two though, in order to check if reached a valid approximation. I assume that it's allowed, because guessing the right number to square is the purpose of the sqrt obligation (so it seems).
+            - x cannot be 0, because it is positive.
+
+        Algorithm Notes:
             - A search for a very specific and accurate value to square requires a very good searching algorithm, so i will search a lion in the desert for that.
             - The left border is clearly the previous element in the series a1, ..., an. The right element cannot be tracked mathematically though. we want to determine the right border as quick as possible, because we are
               searching in the vast infinity in that case. Therefore we will use exponential expression to cut that chase to the right border as quick as possible.
             - We want the base of the exponent to be very big, but perhaps not too big on the beginnig and not too small if we have done several iterations already and the numbers climbed high.
               The last number found in the series is the perfect candidate for that.
-            - x cannot be 0, because it is positive.
     """
 
     # The current approximation value. After the loop will contain the final solution.
@@ -169,7 +171,7 @@ def approx_root(x, eps):
     # Note that we cannot use sqrt. sqrt(x) - approx < eps  ↔  x < eps**2 + 2*approx*eps + approx**2
     while not x < eps**2 + 2*approximation_value*eps + approximation_value**2:
 
-        # --- Right border calculations ---
+        # --- Right border calculations (cut the chase in infinity exponentially) ---
         
         # The exponent.
         power_attempt = 1
@@ -187,7 +189,7 @@ def approx_root(x, eps):
         # We found the right border.
         right_border = right_border ** power_attempt
 
-        # --- Accurate element searching ---
+        # --- Accurate element searching (lion in the desert) ---
         
         # The accurate number is found when the approximation value squared will be the closest to x but smaller than x.
         while left_border != right_border:
@@ -230,6 +232,7 @@ def approx_root(x, eps):
 
     # Done.
     return series, approximation_value
+
 
 # Q3 - B
 def approx_e(N):
@@ -281,6 +284,7 @@ def find(lst, s):
         if s == lst[i]:
             return i
 
+    # s is not in the list.
     return None
 
 
@@ -413,30 +417,53 @@ def int_to_string(k, n):
 # Q5 - C
 def sort_strings1(lst, k):
     """
-        The function receives a list with n strings, each string of length k. It returns a lexicographic sorted copy of the list.
+        The function receives a list with n strings, each string of length k. It returns a lexicographic sorted copy of the list. O(5**k) of memory and O(5**k + n*k) running time.
     """
 
-    # Each index represents the place in the lexicographic dictionary from 0 to 5**k. Each value represents a counter.
+    # Each index represents the place in the lexicographic dictionary from 0 to 5**k. Each value represents a counter. O(5**k).
     dictionary = [0 for i in range(5**k)]
 
-    # Iterate over the list.
-    for i in range(lst):
+    # Iterate over the list. O(n*k).
+    for i in range(len(lst)):
 
         # Calculate the place of the current string in the lexicographic dictionary, and increase its counter.
         dictionary[string_to_int(lst[i])] += 1
 
-    # Return an ordered list with all the strings in lst.
-    return []
+    # Return an ordered list with all the strings in lst. O(5**k + n*k).
+    return [int_to_string(k, i) for i in range(5**k) for j in range(dictionary[i])]
 
 
 # Q5 - E
 def sort_strings2(lst, k):
-    pass  # replace this with your code
+    """
+        The function receives a list with n strings, each string of length k. It returns a lexicographic sorted copy of the list. O(k) of memory and O((5**k)*n*k*) running time.
+    """
+
+    # The sorted list.
+    sorted_list = []
+    
+    # Iterate over the dictionary.
+    for i in range(5**k):
+       
+        # Count how many strings matches the current lexicographic place in the dictionary.
+        for string in lst:
+
+            # That's the place of the current string.
+            if string_to_int(string) == i:
+
+                # Add it now to the sorted list. Keep searching the list, a copy of the current string may hide further in the received list.
+                sorted_list.append(string)
+
+    # Return the sorted list.
+    return sorted_list
+    
 
 
 ##########
 # Tester #
 ##########
+
+
 def test():
     # Q2 - C
     if oct_to_fraction('621000000000') != 0.783203125 or oct_to_fraction('202200000000') != 0.25439453125:
@@ -496,6 +523,7 @@ def test():
             != ['aacc', 'adae', 'aede', 'becb', 'cccc', 'ccea', 'daea', 'dded', 'deea', 'edea']:
         print("error in sort_strings2")
 
+
 def my_test():
     """
         Test the code.
@@ -505,6 +533,12 @@ def my_test():
     if oct_to_fraction("000000000000") != 0:
         print("oct_to_fraction error 1")
 
+    # Q2 - G
+    if oct_to_float('0400621000000000') != 51.859375:
+        print("error in oct_to_float")
+    if oct_to_float('0000000000000000') != 0:
+        print("error in oct_to_float")
+    
     # Q2 - H
     if not is_greater_equal("0000000000000000", "0000000000000000") == True:
         print("is_greater_equal error 1")
@@ -572,14 +606,13 @@ def my_test():
             print("sort from almost error. lst:", lst)
 
     # Q4 - C
-    """
     for n in range(1, 1003, 1):
         for k in [n//2 + 1, n, 2*n, n**2]:
             q_l, q_g = generate_queries(k, n)
             M = compute_median(q_l, q_g, k, n)
             if not (q_l(M) <= n / 2 and q_g(M) <= n /2):
                 print("error in compute median. median found:", M, "list length:", n, "numbers range:", k)
-    """
+
     # Q5 - A
     if string_to_int("a") != 0:
         print("string to int error 1")
@@ -614,9 +647,16 @@ def my_test():
         if int_to_string(3, string_to_int(item)) != item:
             print("Problem with ", item)
 
+    # Q5 - C
+    lst = ["eeee", "aabd", "abda", "cdea", "aabd"]
+    if sort_strings1(lst, 4) != ["aabd", "aabd", "abda", "cdea", "eeee"]:
+        print("sort strings 1 error 1")
+    if sort_strings1([], 9) != []:
+        print("sort strings 1 error 2")
+    if sort_strings2(lst, 4) != ["aabd", "aabd", "abda", "cdea", "eeee"]:
+        print("sort strings 2 error 1")
+    if sort_strings2([], 9) != []:
+        print("sort strings 1 error 2")
+
     
-#test()
-print()
-print("running my tests:")
-my_test()
-print("done")
+test()
