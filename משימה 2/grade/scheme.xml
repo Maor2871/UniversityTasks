@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<functions>
+    <divisors sign="1a">
+        <test sign="1a1" grade="3">
+            <input id="1">6</input>
+            <output id="1">[1,2,3]</output>
+            <input id="2">97</input>
+            <output id="2">[1]</output>
+            <input id="3">36</input>
+            <output id="3">[1,2,3,4,6,9,12,18]</output>
+        </test>
+        <test sign="1a2" grade="2">
+            <input id="1">1</input>
+            <output id="1">[]</output>
+        </test>
+    </divisors>
+    <perfect_numbers sign="1b">
+        <test sign="1b" grade="4">
+            <input id="1">2</input>
+            <output id="1">[6,28]</output>
+            <input id="2">4</input>
+            <output id="2">[6,28,496,8128]</output>
+        </test>
+    </perfect_numbers>
+    <abundant_density sign="1c">
+        <test sign="1c" grade="4">
+            <input id="1">20</input>
+            <output id="1">0.15</output>
+            <input id="2">32</input>
+            <output id="2">0.15625</output>
+            <input id="3">40</input>
+            <output id="3">0.175</output>
+        </test>
+    </abundant_density>
+    <semi_perfect_4 sign="1e">
+        <test sign="1e" grade="3">
+            <input id="1">20</input>
+            <output id="1">True</output>
+            <input id="2">28</input>
+            <output id="2">False</output>
+            <input id="3">35</input>
+            <output id="3">False</output>
+            <input id="4">72</input>
+            <output id="4">True</output>
+        </test>
+    </semi_perfect_4>
+
+    <test_coin sign="2a">
+        <test sign="2a" grade="3">
+            <input id="1">None</input>
+            <output id="1">True</output>
+        </test>
+    </test_coin>
+    <test_roll_dice sign="2b">
+        <test sign="2b" grade="6">
+            <input id="1">6</input>
+            <output id="1">True</output>
+            <input id="2">10</input>
+            <output id="2">True</output>
+        </test>
+    </test_roll_dice>
+    <test_roulette sign="2c">
+        <test sign="2c" grade="5">
+            <input id="1">"odd"</input>
+            <output id="1">True</output>
+            <input id="2">"even"</input>
+            <output id="2">True</output>
+        </test>
+    </test_roulette>
+    <test_roulette_repeat sign="2d">
+        <test sign="2d" grade="4">
+            <input id="1">3, 10000</input>
+            <output id="1">True</output>
+            <input id="2">6, 10000</input>
+            <output id="2">True</output>
+        </test>
+    </test_roulette_repeat>
+    <test_shuffle_list sign="2e">
+        <test sign="2e" grade="4">
+            <input id="1">[1, 2, 3]</input>
+            <output id="1">True</output>
+            <input id="2">[1, 2, 3, 4]</input>
+            <output id="2">True</output>
+            <input id="2">[1]</input>
+            <output id="2">True</output>
+        </test>
+    </test_shuffle_list>
+
+    <inc sign="3a">
+        <test sign="3a" grade="3">
+            <input id="1">"10"</input>
+            <output id="1">"11"</output>
+            <input id="2">"0"</input>
+            <output id="2">"1"</output>
+            <input id="3">"111"</input>
+            <output id="3">"1000"</output>
+        </test>
+    </inc>
+    <add sign="3b">
+        <test sign="3b" grade="2">
+            <input id="1">"10", "11"</input>
+            <output id="1">"101"</output>
+            <input id="2">"10", "0"</input>
+            <output id="2">"10"</output>
+            <input id="3">"111", "111"</input>
+            <output id="3">"1110"</output>
+        </test>
+    </add>
+    <pow_two sign="3c">
+        <test sign="3c1" grade="2">
+            <input id="1">"10", 2</input>
+            <output id="1">"1000"</output>
+            <input id="2">"100001", 3</input>
+            <output id="2">"100001000"</output>
+        </test>
+        <test sign="3c2" grade="4">
+            <input id="1">"0", 2</input>
+            <output id="1">"0"</output>
+            <input id="2">"101", 0</input>
+            <output id="2">"101"</output>
+        </test>
+    </pow_two>
+    <div_two sign="3d">
+        <test sign="3d1" grade="3">
+            <input id="1">"100", 2</input>
+            <output id="1">"1"</output>
+            <input id="2">"111", 2</input>
+            <output id="2">"1"</output>
+        </test>
+        <test sign="3d2" grade="3">
+            <input id="1">"111", 6</input>
+            <output id="1">"0"</output>
+            <input id="2">"100", 0</input>
+            <output id="2">"100"</output>
+            <input id="3">"1", 4</input>
+            <output id="3">"0"</output>
+            <input id="4">"1", 1</input>
+            <output id="4">"0"</output>
+        </test>
+    </div_two>
+    <leq sign="3e">
+        <test sign="3e1" grade="2">
+            <input id="1">"100", "101"</input>
+            <output id="1">True</output>
+            <input id="2">"100", "0"</input>
+            <output id="2">False</output>
+            <input id="3">"100", "100"</input>
+            <output id="3">True</output>
+        </test>
+        <test sign="3e2" grade="1">
+            <input id="1">"1", "0"</input>
+            <output id="1">False</output>
+            <input id="2">"0", "1"</input>
+            <output id="2">True</output>
+            <input id="3">"0", "0"</input>
+            <output id="3">True</output>
+        </test>
+    </leq>
+    <to_decimal sign="3f">
+        <test sign="3f1" grade="2">
+            <input id="1">"100"</input>
+            <output id="1">4</output>
+            <input id="2">"1111"</input>
+            <output id="2">15</output>
+            <input id="3">"10101"</input>
+            <output id="3">21</output>
+        </test>
+        <test sign="3f2" grade="1">
+            <input id="1">"0"</input>
+            <output id="1">0</output>
+            <input id="2">"1"</input>
+            <output id="2">1</output>
+        </test>
+    </to_decimal>
+
+    <lychrel_loops sign="4a">
+        <test sign="4a" grade="3">
+            <input id="1">28</input>
+            <output id="1">2</output>
+            <input id="2">110</input>
+            <output id="2">1</output>
+            <input id="3">280</input>
+            <output id="3">4</output>
+            <input id="4">89</input>
+            <output id="4">24</output>
+        </test>
+    </lychrel_loops>
+    <is_lychrel_suspect sign="4b">
+        <test sign="4b1" grade="2">
+            <input id="1">28, 1</input>
+            <output id="1">True</output>
+            <input id="2">28, 4</input>
+            <output id="2">False</output>
+        </test>
+        <test sign="4b2" grade="1">
+            <input id="2">1186060307891929990, 200</input>
+            <output id="2">True</output>
+            <input id="3">1186060307891929990, 300</input>
+            <output id="3">False</output>
+        </test>
+    </is_lychrel_suspect>
+    <lychrel_sort sign="4c">
+        <test sign="4c" grade="2">
+            <input id="1">[28, 20, 89, 280], 2</input>
+            <output id="1">[20, 28, 89, 280]</output>
+            <input id="2">[280, 28, 1, 5, 89], 3</input>
+            <output id="2">[1, 28, 5, 280, 89]</output>
+        </test>
+    </lychrel_sort>
+
+    <calculate_grades_v1 sign="5a">
+        <test sign="5a" grade="4">
+            <input id="1">[(100, (12, 23, 34)), (90, (90, 90, 90)), (50, (100, 80, 90))]</input>
+            <output id="1">[100, 90, 54.0]</output>
+            <input id="2">[(100, (100, 100, 100)), (90, (90, 93, 90))]</input>
+            <output id="2">[100, 90.1]</output>
+        </test>
+    </calculate_grades_v1>
+    <calculate_grades_v2 sign="5b">
+        <test sign="5b" grade="3">
+            <input id="1">[(100, (12, 23, 34)), (92, (100, 90, 90)), (80, (50, 80, 80))], 0.85, lambda x: min(100, x+10)</input>
+            <output id="1">[88.45, 99.0, 87.0]</output>
+            <input id="2">[(100, (12, 23, 34)), (92, (100, 90, 90)), (80, (50, 80, 80))], 0.85, lambda x: max(0, x-2)</input>
+            <output id="2">[86.75, 90.5, 76.8]</output>
+        </test>
+    </calculate_grades_v2>
+    <calculate_grades_v3 sign="5c">
+        <test sign="5c" grade="4">
+            <input id="1">[(100, (12, 23, 34)), (92, (100, 90, 90)), (80, (50, 80, 80))], 0.85</input>
+            <output id="1">[89.275, 92.45, 80.0]</output>
+            <input id="2">[(100, (12, 23, 34)), (92, (100, 90, 90)), (80, (100, 50, 82))], 0.9</input>
+            <output id="2">[92.85, 92.3, 81.1]</output>
+            <input id="3">[(80, (55, 55, 56))], 0.8</input>
+            <output id="3">[75.1]</output>
+        </test>
+    </calculate_grades_v3>
+
+</functions>
