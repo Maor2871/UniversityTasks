@@ -21,18 +21,24 @@ from copy import deepcopy
 
 
 # 1b
-def change_v2(amount, coins, tail=[]):
+def change_v2(amount, coins):
+    """
+        The function calls change_v2_tail with the received parameteres.
+    """
+
+    return change_v2_tail(amount, coins)
+
+
+def change_v2_tail(amount, coins, tail=[]):
     """
         The Recursion receives an amount and available coins. It returns a list with all the coins combinations which their sums equals the amount.
         tail accumulates all the coins that were accumulated before the call to the function.
-        Note that the time complexity of the change problem is exponential (terrible), therefore slicing and concatenating is relativly ok here.
+        Note that the time complexity of the change problem is exponential (terrible), therefore slicing and concatenating is relativly ok here- no need to overwhelm with complex code to avoid.
     """
 
     # Greate, the combination in the tail is precise, no need for more coins.
     if amount == 0:
-        if tail:
-            return [tail]
-        return []
+        return [tail]
 
     # No coins left and amount was not reached.
     if coins == []:
@@ -44,21 +50,25 @@ def change_v2(amount, coins, tail=[]):
     # Check if the first coin does not exceed the required amount by itself.
     if coins[0] <= amount:
 
-        # Find all the combinations with the first coin used (we wish to send a new copy of tail, the concatenation does it by definition).
-        combinations_with_first = change_v2(amount - coins[0], coins, tail=tail+[coins[0]])
+        # Find all the combinations with the first coin used (we wish to send a new copy of tail, the list concatenation does it by definition).
+        combinations_with_first = change_v2_tail(amount - coins[0], coins, tail=tail+[coins[0]])
 
     # Check all the combinations without the first coin. Return all the combinations accumulated after all.
-    return combinations_with_first + change_v2(amount, coins[1:], tail=tail)
+    return combinations_with_first + change_v2_tail(amount, coins[1:], tail=tail)  
 
 
 # 1c_ii
 def winnable_mem(board):
+    """
+        The function calls the winnable mem rec with the received board.
+    """
+    
     d = {}
     return winnable_mem_rec(board, d)
 
 def winnable_mem_rec(board, d):
     """
-        The function receives a board, and a dictionary with already calculated boards, it returns True if the board is winnable, otherwise returns False.
+        The function receives a board, and a dictionary with already calculated boards ({board: True/False}), it returns True if the board is winnable, otherwise returns False.
     """
 
     # Required for dealing with the dictionary.
@@ -130,7 +140,7 @@ def legal_path(A, vertices):
     for i in range(len(vertices) - 1):
 
         # If the current bow is not on the graph, this is not a legal path.
-        if not A[vertices[i]][vertices[i+1]]:
+        if not A[vertices[i]][vertices[i+1]] and vertices[i] != vertices[i + 1]:
             return False
 
     # All the bows in the vertices list are on the graph, this is a legal path.
@@ -236,15 +246,16 @@ def can_create_twice(s, L):
 def valid_braces_placement(s, L):
     """
         The function receives a list of numbers and operations. It returns True if there exists a braces placement on the expression which produces the results s.
+        Note that the function does not operate well for empty L, because in the requirements it is stated that the length of the list is odd and starts from 1.
     """
 
-    # Check if the current braces placement is valid.
+    # There is no more room for braces, check if results is s.
     if len(L) == 1:
         if L[0] == s:
             return True
         return False
     
-    # Iterate over the list.
+    # Iterate over the numbers in the list.
     for i in range(0, len(L) - 1, 2):
         
         # Place the braces in i.
@@ -287,6 +298,10 @@ def grid_escape_from_1(B, initial_location):
 
     # Save the current step.
     step = B[current_row][current_col]
+
+    # Step is 0. Deadend.
+    if not step:
+        return False
     
     # Check if we can go up and stay in bound.
     if current_row + step < len(B):
@@ -332,6 +347,10 @@ def grid_escape_from_2(B, initial_location, already_checked=[]):
 
     # Save the current step.
     step = B[current_row][current_col]
+
+    # There's no real nead to make this check because of the memoaization, nevertheless, it's neat.
+    if not step:
+        return False
     
     # Check if we can go up and stay in bound.
     if current_row + step < len(B) and (current_row + step, current_col) not in already_checked:
@@ -448,9 +467,9 @@ class MyTest:
         # Q 1
 
         # b
-        self.change_v2_check_results(results=change_v2(amount=5, coins=[1, 2, 3], tail=[]),
+        self.change_v2_check_results(results=change_v2(amount=5, coins=[1, 2, 3]),
                                 expected=[[1, 1, 1, 1, 1], [1, 1, 1, 2], [1, 1, 3], [1, 2, 2], [2, 3]])
-        self.change_v2_check_results(results=change_v2(amount=0, coins=[]), expected=[])
+        self.change_v2_check_results(results=change_v2(amount=0, coins=[]), expected=[[]])
 
         # c
         for board_size in range(5):
@@ -470,6 +489,12 @@ class MyTest:
         # a
         if legal_path([[1, 0], [0, 1]], []) is not True:
             print("error 1 in legal_path")
+        if legal_path([], []) is not True:
+            print("error 2 in legal_path")
+        if legal_path([[1, 0], [0, 1]], [0, 0]) is not True:
+            print("error 3 in legal_path")
+        if legal_path([[0, 1], [1, 0]], [0, 1, 0, 1, 0, 0, 1, 1]) is not True:
+            print("error 4 in legal_path")
         
         # c
         for i in range(1, 10):
@@ -503,7 +528,7 @@ class MyTest:
         try:
             self.path_v3(path_v3_d[0], path_v3_d[1], path_v3_d[2])
             print("error 1 in path_v3")
-        except:
+        except Exception as s:
             pass # Greate.
 
         # d ii
@@ -571,6 +596,14 @@ class MyTest:
             print("error 1 in valid_braces_placement")
         if not valid_braces_placement(1, [6, '-', 4, '*', 2, '+', 3]):
             print("error 2 in valid_braces_placement")
+        if not valid_braces_placement(5, [5]):
+            print("error 3 in valid_braces_placement")
+        if valid_braces_placement(3, [5]):
+            print("error 4 in valid_braces_placement")
+        if not valid_braces_placement(0, [9, '*', 3, '*', 3, '-', 9]):
+            print("error 5 in valid_braces_placement")
+        if valid_braces_placement(0, [9, '*', 3, '*', 2, '-', 9]):
+            print("error 6 in valid_braces_placement")
 
         # Q 4
 
@@ -579,6 +612,10 @@ class MyTest:
             print("error 1 in grid escape 1")
         if grid_escape1([[2, 3, 1, 2], [2, 2, 2, 2], [2, 2, 3, 2], [2, 2, 2, 2]]):
             print("error 2 in grid escape 1")
+        if grid_escape1([[0, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 1, 2]]):
+            print("error 3 in grid escape 1")
+        if not grid_escape1([[1, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 1, 2]]):
+            print("error 1 in grid escape 1")
 
         # b
         if not grid_escape2([[1, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 1, 2]]):
@@ -587,6 +624,8 @@ class MyTest:
             print("error 2 in grid escape 2")
         if grid_escape2([[2, 1, 2, 1], [1, 2, 1, 1], [2, 2, 2, 2], [4, 4, 4, 4]]):
             print("error 3 in grid escape 2")
+        if grid_escape2([[0, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 1, 2]]):
+            print("error 4 in grid escape 2")
 
     def change_v2_check_results(self, results, expected):
         """
@@ -649,9 +688,3 @@ class MyTest:
                 if self.path_v3(A, i, t):
                     return True
         return False
-
-print("running tests...")
-my_tester = MyTest()
-my_tester.test()
-test()
-print("done.")
