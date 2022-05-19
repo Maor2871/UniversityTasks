@@ -11,6 +11,25 @@ import random
 import math
 
 
+# --- Semi functions ---
+
+
+def points_quicksort(lst):
+    """
+        The function receives a list of points and returns the list ordered with quicksot, by average time complexity of O(nlogn).
+    """
+    
+    if len(lst) <= 1: 
+        return lst
+    else:
+        pivot = random.choice(lst)
+        smaller = [point for point in lst if point.theta < pivot.theta] 
+        equal = [point for point in lst if point.theta == pivot.theta]      
+        greater = [point for point in lst if point.theta > pivot.theta]
+
+        return points_quicksort(smaller) + equal + points_quicksort(greater)
+
+
 ##############
 # QUESTION 1 #
 ##############
@@ -294,12 +313,51 @@ class Point:
 
     # 3a_i
     def angle_between_points(self, other):
-        pass # replace this with your code
-
+        if self.theta > other.theta:
+            return 2 * math.pi - self.theta + other.theta
+        return other.theta - self.theta
 
 # 3a_ii
 def find_optimal_angle(trees, alpha):
-    pass  # replace this with your code
+
+    # If no trees in the forest, my dear bear look were ever you want.
+    if not trees:
+        return 0
+    
+    # Order the list of trees with quicksort, O(nlogn).
+    ordered_trees = points_quicksort(trees)
+    
+    # head >= tails.
+    tail = 0
+
+    # The current max trees combo in alpha angle.
+    max_trees_combo = 0
+    theta_of_max_combo = None
+
+    # The current combo we are at.
+    current_combo = 0
+
+    # Explore new tree each iteration O(n).
+    for head in range(len(ordered_trees)):
+
+        # The new tree is within the alpha range from the current tail.
+        if ordered_trees[tail].angle_between_points(ordered_trees[head]) <= alpha:
+            current_combo += 1
+
+        # Out of range, update tail and combo.
+        else:
+            tail += 1
+            current_combo -= 1
+            while ordered_trees[tail].angle_between_points(ordered_trees[head]) > alpha:
+                tail -= 1
+                current_combo -= 1
+
+        # Check if the new combo is the max one.
+        if current_combo > max_trees_combo:
+            max_trees_combo = current_combo
+            theta_of_max_combo = ordered_trees[tail].theta
+
+    return theta_of_max_combo
 
 
 class Node:
@@ -412,11 +470,68 @@ class Polygon:
 
     # 3b_ii
     def edges(self):
-        pass # replace this with your code
+        """
+            IMPORTANT NOTE: As it is stated in the question, it is not clear if the order of the points of the polygons is clockwise.
+                            To get the actulat size of the angles, the order of the points in the linked list should be clockwise.
+                            We handle that case at the end of the method with O(n).
+        """
+        # Maybe im a polygon by defenition, but my points does not have angles.
+        if len(self.points_list) <= 2:
+            return [0] * len(self.points_list)
+        
+        # The final list with the edges. The first edge will be calculated at the end of the loop.
+        edges = [None]
+        
+        # current is the edge of the current point we are calculating.
+        prev = self.point_head
+        current = prev.next
+        to = current.next
+
+        # Save the edge of the current point.
+        edges.append(calculate_angle(prev.value, current.value, to.value))
+
+        # Keep iteratig as long as there are more vertices, O(n).
+        while to.next:           
+
+            # Move to the next point.
+            prev = current
+            current = to
+            to = to.next
+
+            # Save the edge of the current point.
+            edges.append(calculate_angle(prev.value, current.value, to.value))
+
+        # Calculate the angle of the last point.
+        edges.append(calculate_angle(current.value, to.value, self.point_head.value))
+
+        # Update the angle of the first point.
+        edges[0] = calculate_angle(to.value, self.point_head.value, self.point_head.next.value)
+
+        # Make sure that the points of the received polygon are ordered clockwise, O(n).
+        if sum(edges) > (len(self.points_list) - 2) * 180:
+
+            # Update the angles.
+            edges = [360 - edge for edge in edges]
+
+        # We have calculated the edges of all the points by order.
+        return edges
 
     # 3b_iii
     def is_convex(self):
-        pass # replace this with your code
+        """
+            A convex polygon is a polygon which all its interial angles are less than 180, and a concave polygon is one that has at least one interior angle greater than 180.
+        """
+
+        # Edges calculates the interior angles of the polygon. Check if one of them is greater than 180.
+        for interior_angle in self.edges():
+
+            # That is a concave polygon, not convex.
+            if interior_angle > 180:
+
+                return False
+
+        # All interior angles are less than 180, it's a convex polygon.
+        return True
 
 
 ##############
@@ -752,6 +867,7 @@ class MyTest:
     def __init__(self):
 
         self.test_2()
+        self.test_3()
 
     def test_2(self):
 
@@ -826,6 +942,84 @@ class MyTest:
             print("gcd error 6")
 
         num1.lcm(others=[num2, num3, num4, num5])
+
+    def test_3(self):
+
+        # --- Points ---
+        
+        p1 = Point(1, 0.5)
+        p2 = Point(1, 1)
+        p3 = Point(0, 1)
+        p4 = Point(1, 0)
+        p5 = Point(-1, -1)
+        p6 = Point(1, -1)
+
+        if not (p1.angle_between_points(p2) > 0 and p1.angle_between_points(p2) < 45):
+            print("angle_between_points error 1")
+        if not (p2.angle_between_points(p1) > 1.5*math.pi and p2.angle_between_points(p1) < 2*math.pi):
+            print("angle_between_points error 2")
+        if not (p3.angle_between_points(p1) > 0 and p3.angle_between_points(p1) < 45):
+            print("angle_between_points error 3")
+        if not (p4.angle_between_points(p3) - (math.pi / 2) < 0.001):
+            print("angle_between_points error 4")
+        if not (p3.angle_between_points(p4) - 1.5 * math.pi < 0.001):
+            print("angle_between_points error 5")
+        if not (p5.angle_between_points(p6) - math.pi / 2 < 0.001):
+            print("angle_between_points error 6")
+        if not (p6.angle_between_points(p5) - 1.5 * math.pi < 0.001):
+            print("angle_between_points error 7")
+        if not (p6.angle_between_points(p6) == 0):
+            print("angle_between_points error 8")
+
+        # --- Bear and Trees ---
+        
+        trees = [Point(2,1),Point(0,3),Point(-1,3), Point(-1,1),Point(-1,-1),Point(0,-5)]
+        if not find_optimal_angle(trees, 0.25 * math.pi) - 1.5707 < 0.001:
+            print("find_optimal_angle error 1")
+
+        trees = [Point(1,1)]
+        if not find_optimal_angle(trees, 0.2) - math.pi / 4 < 0.001:
+            print("find_optimal_angle error 2")
+
+        trees = []
+        if not find_optimal_angle(trees, 0.2) == 0:
+            print("find_optimal_angle error 3")
+
+        trees = [Point(2,1),Point(0,3),Point(-1,3), Point(-1,1),Point(-1,-1),Point(0,-5)]
+        if not find_optimal_angle(trees, 0) - 0.463 < 0.01:
+            print("find_optimal_angle error 4")
+
+        # --- Polygons Party ---
+
+        parallelogram = Polygon(Linked_list([Point(1,1),Point(4,4),Point(8,4),Point(5,1)]))
+        parallelogram_rev = Polygon(Linked_list([Point(1,1),Point(4,4),Point(8,4),Point(5,1)][::-1]))
+
+        triangle = Polygon(Linked_list([Point(1,1),Point(4,4),Point(8,4)]))
+        triangle_rev = Polygon(Linked_list([Point(1,1),Point(4,4),Point(8,4)][::-1]))
+
+        rectangle = Polygon(Linked_list([Point(1,1),Point(1,-1),Point(-1,-1),Point(-1, 1)]))
+        line = Polygon(Linked_list([Point(-10,0),Point(10,0)]))
+
+        not_convex = Polygon(Linked_list([Point(1,1),Point(8,1),Point(7,2),Point(8,4)]))
+        not_convex_rev = Polygon(Linked_list([Point(1,1),Point(8,1),Point(7,2),Point(8,4)][::-1]))
+
+        if parallelogram.edges() != [45.0, 135.0, 45.0, 135.0] or parallelogram_rev.edges() != [45.0, 135.0, 45.0, 135.0][::-1]:
+            print("edges error 1")
+        if triangle.edges() != [21.80140948635181, 135.0, 23.198590513648185] or triangle_rev.edges() != [21.801409486351815, 135.0, 23.198590513648185][::-1]:
+            print("edges error 2")
+        if rectangle.edges() != [90, 90, 90, 90]:
+            print("edges error 3")
+        if line.edges() != [0, 0]:
+            print("edges error 4")
+        if not_convex.edges() != [23.198590513648185, 45.0, 251.56505117707798, 40.23635830927384] or not_convex_rev.edges() != [40.23635830927382, 251.56505117707798, 45.0, 23.19859051364819]:
+            print("edges error 5")
+
+        if not parallelogram.is_convex() or not parallelogram_rev.is_convex():
+            print("is_convex error 1")
+        if not_convex.is_convex() or not_convex_rev.is_convex():
+            print("is_convex error 2")
+        if not triangle.is_convex or not triangle_rev.is_convex():
+            print("is_convex error 3")
 
 
 my_test = MyTest()
