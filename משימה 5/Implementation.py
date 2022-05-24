@@ -622,6 +622,58 @@ class Tree_node():
     def __repr__(self):
         return "(" + str(self.key) + ":" + str(self.val) + ")"
 
+    def is_q_balanced_count(self, q, count=0):
+        
+        # --- Initial conditions ---
+
+        # A leaf.
+        if not self.left and not self.right:
+            return True, count + 1
+
+        # If the right node exists and the left does not:
+        if not self.left and self.right:
+
+            # It's a leaf, it's ok.
+            if not self.right.right and not self.right.left:
+                return True, count + 2
+
+            # Does not match the requirments of a q balanced tree.
+            else:
+                return False, -1
+
+        # If the left node exists and the right does not.
+        if self.left and not self.right:
+
+            # It's a leaf, it's ok.
+            if not self.left.left and not self.left.right:
+                return True, count + 2
+
+            # Does not match the requirements of a q balanced tree.
+            else:
+                return False, -1
+
+        # --- Recursive calculations ---
+        
+        # Calculate the right and left nodes.
+        is_left_q_balanced, left_nodes = self.left.is_q_balanced_count(q, count)
+        is_right_q_balanced, right_nodes = self.right.is_q_balanced_count(q, count)
+
+        # One of them is not q balanced, therefore the current tree is not q balanced.
+        if not is_left_q_balanced or not is_right_q_balanced:
+            return False, -1
+
+        # Update the counters calculations.
+        left_nodes -= count
+        right_nodes -= count
+        total_nodes = right_nodes + left_nodes
+        
+        # The right and left nodes are q balanced each, but the current tree is not balanced on q.
+        if not min(left_nodes / total_nodes, right_nodes / total_nodes) >= q:
+            return False, -1
+
+        # The current Tree is q balanced indeed.
+        return True, total_nodes + 1
+
 
 class Binary_search_tree():
 
@@ -686,7 +738,16 @@ class Binary_search_tree():
 
     # 4
     def is_q_balanced(self, q):
-        pass  # replace this with your code
+        """
+            O(n), each node is visited once, and the inner calculations are O(1).
+        """
+
+        # This "Tree" is not even a tree, it's literally does not exist.
+        if not self.root:
+            return False, -1
+        
+        return self.root.is_q_balanced_count(q)
+        
 
 
 ############
@@ -695,7 +756,15 @@ class Binary_search_tree():
 
 # 5a
 def prefix_suffix_overlap(lst, k):
-    pass  # replace this with your code
+
+    k_matched = []
+    
+    for i in range(len(lst)):
+        for j in range(len(lst)):
+            if i != j and lst[i][:k] == lst[j][-k:]:
+                k_matched.append((i, j))
+
+    return k_matched
 
 
 # 5c
@@ -718,17 +787,42 @@ class Dict:
 
     def find(self, key):
         """ returns ALL values of key as a list, empty list if none """
-        pass  # replace this with your code
+
+        # Get the index of the current key in the hashtable.
+        i = self.hash_mod(key)
+
+        # The same index can match to multiple keys. Therefore we must iterate the list of the current index and extract only the items with the received key.
+        return [item[1] for item in self.table[i] if item[0] == key]
 
 
 # 5d
 def prefix_suffix_overlap_hash1(lst, k):
-    pass  # replace this with your code
+
+    k_match = []
+    
+    # We define m to be n because the strings already exist in the memory, it means that their size is handled fine in the current machine.
+    d = Dict(len(lst))
+
+    # Let's insert each string to it's right place in the dictionary.
+    for i in range(len(lst)):
+        d.insert(lst[i][:k], i)
+
+    # Now let's create the list to return.
+    for j in range(len(lst)):
+        share_key = d.find(lst[j][-k:])
+        for i in share_key:
+            if i != j:
+                k_match.append((i, j))
+
+    return k_match
+    
 
 
 ##########
 # TESTER #
 ##########
+
+
 
 def test():
     ##############
@@ -868,6 +962,8 @@ class MyTest:
 
         self.test_2()
         self.test_3()
+        self.test_4()
+        self.test_5()
 
     def test_2(self):
 
@@ -1021,5 +1117,66 @@ class MyTest:
         if not triangle.is_convex or not triangle_rev.is_convex():
             print("is_convex error 3")
 
+    def test_4(self):
+        
+        t1 = Binary_search_tree()
+        t1.insert('c', 10)
+        t1.insert('b', 10)
+        t1.insert('a', 10)
+        t1.insert('g', 10)
+        t1.insert('e', 10)
+        t1.insert('f', 10)
+        t1.insert('i', 10)
+        t1.insert('h', 10)
+        t1.insert('j', 10)
 
-my_test = MyTest()
+        if t1.is_q_balanced(0.25) != (True, 9):
+            print("is_q_balanced error 1")
+        if t1.is_q_balanced(0.3) != (False, -1):
+            print("is_q_balanced error 2")
+
+        t1 = Binary_search_tree()
+        if t1.is_q_balanced(0.25) != (False, -1):
+            print("is_q_balanced error 3")
+
+    def test_5(self):
+
+        result = prefix_suffix_overlap(["a"*10, "b"*4 + "a"*6, "c"*5 + "b"*4 + "a"], 5)
+        expected = [(0, 1), (1, 2)]
+        self.prefix_check(result, expected, 1)
+
+        result = prefix_suffix_overlap(["a"*10, "b"*4 + "a"*6, "c"*5 + "b"*4 + "a"], 8)
+        expected = []
+        self.prefix_check(result, expected, 1)
+
+        d = Dict(5)
+        d.insert("abcd", 3)
+        d.insert("dead", 5)
+        for i in range(4): d.insert("degc", 12 + i * 3)
+
+        if d.find("qwer"):
+            print("find error 1")
+
+        self.prefix_check(result=d.find("degc"), expected=[12, 15, 18, 21], error_num=2)
+
+        if d.find("abcd") != [3]:
+            print("find error 3")
+
+        result = prefix_suffix_overlap_hash1(["a"*10, "b"*4 + "a"*6, "c"*5 + "b"*4 + "a"], 5)
+        expected = [(0, 1), (1, 2)]
+        self.prefix_check(result, expected, 1)
+
+        result = prefix_suffix_overlap_hash1(["a"*10, "b"*4 + "a"*6, "c"*5 + "b"*4 + "a"], 8)
+        expected = []
+        self.prefix_check(result, expected, 1)
+
+    def prefix_check(self, result, expected, error_num):
+
+        for pair in expected:
+            if pair not in result:
+                print("prefix_check not in result error " + str(error_num) + ":", pair)
+                break
+        for pair in result:
+            if pair not in expected:
+                print("prefix_check not in expected error " + str(error_num) + ":", pair)
+                break
