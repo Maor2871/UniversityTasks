@@ -763,10 +763,10 @@ class Binary_search_tree():
         return self.root.is_q_balanced_count(q)
         
 
-
 ############
 # QUESTION 5
 ############
+
 
 # 5a
 def prefix_suffix_overlap(lst, k):
@@ -1104,6 +1104,12 @@ class MyTest:
 
         if not find_optimal_angle(trees, 0) - 0.463 < 0.01:
             print("find_optimal_angle error 4")
+
+        trees = [Point(2, 1), Point(-1, 1), Point(-1, -1), Point(-2, -2), Point(-3, -3), Point(-4, -4), Point(-5, -5), Point(0, 3), Point(0, -5), Point(-1, 3)]
+        random.shuffle(trees)
+
+        if not find_optimal_angle(trees, 0.1 * math.pi) - (math.pi*2.25) < 0.001:
+            print("find_optimal_angle error 5")
 
         # --- Polygons Party ---
 
